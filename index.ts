@@ -42,3 +42,8 @@ function main() {
 }
 
 main();
+
+export { Indexer } from './src/indexer';
+export { Searcher } from './src/searcher';
+
+export type { Document } from './src/types';

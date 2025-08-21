@@ -1,12 +1,23 @@
 {
   "name": "lucene",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-    
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "prepublishOnly": "npm run build"
   },
-  "keywords": [],
+  "keywords": [
+    "search",
+    "full-text",
+    "lucene",
+    "search-engine"
+  ],
   "author": "",
   "license": "ISC",
   "description": "",
@@ -14,5 +25,5 @@
     "@types/node": "^24.2.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
-  }
+  }  
 }
