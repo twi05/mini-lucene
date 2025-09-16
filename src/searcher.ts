@@ -10,7 +10,6 @@ export class Searcher {
 
   public search(query: string): Document[] {
     if (this.cache.has(query)) {
-      console.log("Cache hit");
       const cached = this.cache.get(query)!;
       // Refresh LRU order by re-setting the key
       this.cache.delete(query);
@@ -95,9 +94,6 @@ export class Searcher {
     if (postingLists.length === 0) return [];
 
     const rarestList = postingLists[0];
-    // console.log('rarestList', rarestList);
-    console.log('rarestList.postings', rarestList.postings.entries());
-    
     for (const [docId] of rarestList.postings.entries()) {
     
       const hasAllTerms = postingLists.slice(1).every(list => list.postings.has(docId));
