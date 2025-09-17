@@ -29,10 +29,13 @@ npm install mini-search-lib
 
 ```js
 // CommonJS
-const { LiteSearch } = require('mini-search-lib');
+const { MiniSearch } = require('mini-search-lib');
+
+// ES Modules / TypeScript
+// import { MiniSearch } from 'mini-search-lib';
 
 // Create engine and index some documents
-const search = new LiteSearch([
+const search = new MiniSearch([
   { id: 1, title: 'Learning JavaScript', body: 'A popular guide to JavaScript basics.' },
   { id: 2, title: 'Advanced Guide to JavaScript', body: 'Build complex JavaScript apps.' },
   { id: 3, title: 'Building a Search Engine', body: 'How to build a search engine from scratch.' }
@@ -46,7 +49,7 @@ console.log(search.search('build')); // stemming matches "building"
 
 ## 🧠 Usage
 
-- **Indexing at construction**: Pass an array of documents when creating `LiteSearch`.
+- **Indexing at construction**: Pass an array of documents when creating `MiniSearch`.
 - **Add later**: Use `addDocuments(docs)`. Re-computes IDF automatically.
 - **Search**: `search(query: string)` returns an array of matching documents, ranked by TF‑IDF.
 
@@ -74,14 +77,14 @@ Notes:
 ## 🧪 TypeScript example
 
 ```ts
-import { LiteSearch } from 'mini-search-lib';
+import { MiniSearch } from 'mini-search-lib';
 
 const docs = [
   { id: 'A', title: 'Intro to TS', body: 'TypeScript adds types to JavaScript.' },
   { id: 'B', title: 'TS Advanced', body: 'Generics, utility types, and more.' },
 ];
 
-const engine = new LiteSearch(docs);
+const engine = new MiniSearch(docs);
 
 // Add more docs later
 engine.addDocuments([{ id: 'C', title: 'Build a search', body: 'Implement a simple search engine.' }]);
@@ -107,7 +110,7 @@ node dist/src/index.js
 
 ## 🔍 API reference (minimal)
 
-- `new LiteSearch(docs?: Document[])`
+- `new MiniSearch(docs?: Document[])`
   - Creates a search engine and indexes the provided documents (optional).
 - `addDocuments(docs: Document[]): void`
   - Adds documents and updates IDF weights.
