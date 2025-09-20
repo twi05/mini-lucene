@@ -1,118 +1,147 @@
+# MiniSearch: A pocket-sized Elasticsearch for your projects
 
-# Mini Search: A Lightweight Search Engine in TypeScript
+[![npm version](https://img.shields.io/npm/v/mini-search-lib?style=flat-square)](https://www.npmjs.com/package/mini-search-lib)
+[![license](https://img.shields.io/github/license/twi05/mini-lucene?style=flat-square)](./LICENSE)
+![language](https://img.shields.io/badge/language-TypeScript-blue?style=flat-square)
 
-<p>
-  <img src="https://img.shields.io/npm/v/mini-search-lib?style=flat-square" alt="NPM Version">
-  <img src="https://img.shields.io/github/license/twi05/mini-lucene?style=flat-square" alt="License">
-  <img src="https://img.shields.io/badge/language-TypeScript-blue?style=flat-square" alt="Language">
-</p>
+MiniSearch is a **lightweight, zero-dependency, in-memory full-text search engine** built from scratch in TypeScript.  
+It brings the power of Elasticsearch's **search features** — without servers, clusters, or complex infra.
 
-A lightweight, zero-dependency, in-memory full-text search engine built from scratch in TypeScript. 
+✨ Perfect for:
+- Side projects & prototypes  
+- Educational use (learn how search engines work)  
+- Lightweight apps that don't need distributed infra
 
-## ✨ Features
+---
 
-* **Inverted Index**: Efficiently maps terms to the documents that contain them.
-* **TF-IDF Scoring**: Ranks search results by relevance, not just by presence.
-* **Phrase Searching**: Supports exact phrase queries using double quotes (e.g., `"search engine"`).
-* **Stemming**: Uses the Porter Stemmer algorithm to match words by their root form (e.g., "building" matches "build").
-* **Stop Word Filtering**: Ignores common words to improve relevance and reduce index size.
-* **Zero Dependencies**: Written in pure TypeScript with no external libraries.
+## Why MiniSearch?
 
+Elasticsearch is powerful, but heavy — it requires JVM, infra, and clusters, and often provides more than small projects need.
 
-## 🚀 Installation
+**MiniSearch** focuses purely on **search** and provides:
+- 🔎 **Inverted Index** — maps terms to documents efficiently  
+- 📊 **TF-IDF Scoring** — ranks results by relevance, not just by presence  
+- 📝 **Phrase Search** — exact phrase queries using double quotes (`"search engine"`)  
+- 🌱 **Stemming** — Porter stemmer reduces words to roots (e.g., `building` → `build`)  
+- 🚫 **Stop Word Filtering** — ignores common filler words to reduce noise  
+- 🪶 **Zero Dependencies** — pure TypeScript, runs anywhere  
+- ⚡ **In-Memory** — fast for small/medium datasets
+
+Think of it as **Elasticsearch's little sibling** — same brain, smaller footprint.
+
+---
+
+## Installation
 
 ```bash
 npm install mini-search-lib
+# or
+yarn add mini-search-lib
 ```
 
-## 📦 Quick Start
+## Quick Start
 
-```js
-// CommonJS
-const { MiniSearch } = require('mini-search-lib');
+```ts
+import { MiniSearch } from 'mini-search-lib';
 
-// ES Modules / TypeScript
-// import { MiniSearch } from 'mini-search-lib';
-
-// Create engine and index some documents
-const search = new MiniSearch([
+const engine = new MiniSearch([
   { id: 1, title: 'Learning JavaScript', body: 'A popular guide to JavaScript basics.' },
   { id: 2, title: 'Advanced Guide to JavaScript', body: 'Build complex JavaScript apps.' },
   { id: 3, title: 'Building a Search Engine', body: 'How to build a search engine from scratch.' }
 ]);
 
-// Run searches
-console.log(search.search('javascript guide'));
-console.log(search.search('"building a search engine"')); // phrase search
-console.log(search.search('build')); // stemming matches "building"
+console.log(engine.search('javascript guide'));
+console.log(engine.search('"building a search engine"')); // phrase search
+console.log(engine.search('build')); // stemming matches "building"
 ```
 
-## 🧠 Usage
+<details>
+<summary>CommonJS example</summary>
 
-- **Indexing at construction**: Pass an array of documents when creating `MiniSearch`.
-- **Add later**: Use `addDocuments(docs)`. Re-computes IDF automatically.
-- **Search**: `search(query: string)` returns an array of matching documents, ranked by TF‑IDF.
+```js
+const { MiniSearch } = require('mini-search-lib');
+
+const engine = new MiniSearch();
+engine.addDocuments([{ id: 1, title: 'Hello', body: 'World' }]);
+console.log(engine.search('hello'));
+```
+</details>
+
+## Usage
+
+- **Indexing at construction**: pass an array of documents when creating `MiniSearch`.  
+- **Add later**: call `addDocuments(docs)` to append documents and update IDF weights.  
+- **Search**: `search(query: string)` returns an array of matching documents ranked by relevance.  
 
 ### Document shape
 
 ```ts
 type Document = {
   id: string | number;
-  // Any other string fields will be indexed (e.g., title, body, description)
+  // Any other string fields will be indexed (title, body, description, etc.)
   [key: string]: any;
 }
 ```
 
-Notes:
-- The field `id` is treated as an identifier and not analyzed.
-- All other string fields are tokenized, stemmed, and added to the inverted index.
+**Notes:**
+- `id` is treated as an identifier and not analyzed.
+- All other string fields are tokenized, stemmed, and indexed.
 
 ### Query features
 
-- **TF‑IDF ranking**: Multi-term queries are ranked by term frequency × inverse document frequency.
-- **Phrase search**: Wrap a phrase in double quotes, e.g., `"data structures"`.
-- **Stemming**: Porter stemmer reduces words to roots (e.g., "running" → "run").
-- **Stop words**: Common words (e.g., "the", "and") are ignored.
+- **TF-IDF ranking** — multi-term queries are ranked by term frequency × inverse document frequency.
+- **Phrase search** — wrap exact phrases in double quotes, e.g., `"data structures"`.
+- **Stemming** — Porter stemmer reduces words to root forms (e.g., `running` → `run`).
+- **Stop words** — common words (e.g., `the`, `and`) are ignored to reduce noise.
 
-## 🧪 TypeScript example
+## How It Works
 
-```ts
-import { MiniSearch } from 'mini-search-lib';
+MiniSearch implements the core building blocks of modern search engines:
 
-const docs = [
-  { id: 'A', title: 'Intro to TS', body: 'TypeScript adds types to JavaScript.' },
-  { id: 'B', title: 'TS Advanced', body: 'Generics, utility types, and more.' },
-];
+- **Inverted Index** — a mapping of terms → documents that contain them.
+- **TF-IDF Scoring** — prioritizes rarer, more meaningful terms for relevance ranking.
+- **Stemming + Stop Words** — improves relevance and reduces index size/noise.
+- **Exact Phrase Queries** — supports exact matches vs. loose multi-term matches.
 
-const engine = new MiniSearch(docs);
+If you've ever wondered how Elasticsearch works under the hood — this is that core, simplified and hackable.
 
-// Add more docs later
-engine.addDocuments([{ id: 'C', title: 'Build a search', body: 'Implement a simple search engine.' }]);
+## When to Use
 
-const results = engine.search('typescript search');
-console.log(results.map(d => d.id));
-```
+✅ **Use MiniSearch when:**
+- You're building a prototype, side project, or hackathon app.
+- You want to quickly add search functionality without complex setup.
+- You don't need distributed infra, analytics, or persistence.
 
-## ⚙️ From source
+❌ **Don't use MiniSearch when:**
+- You need to search millions of documents at scale.
+- You require analytics, aggregations, logging pipelines, or observability stacks.
+- You need durable persistence out of the box (MiniSearch is in-memory).
+
+## Minimal API Reference
+
+- `new MiniSearch(docs?: Document[])` — creates a search engine and optionally indexes provided documents.
+- `addDocuments(docs: Document[]): void` — adds documents and updates internal weights.
+- `search(query: string): Document[]` — returns matched documents, ranked by TF-IDF.
+
+## Roadmap
+
+- BM25 scoring (closer to Elasticsearch relevance)
+- Highlighting matched snippets in results
+- Optional index persistence to disk
+- Configurable tokenization and custom analyzers
+
+## Development (from source)
 
 ```bash
-# Clone and install
-git clone https://github.com/twi05/mini-lucene.git
-cd mini-lucene
+git clone https://github.com/twi05/mini-search-lib.git
+cd mini-search-lib
 npm install
-
-# Build
 npm run build
-
-# Use the built artifact from dist/
-node dist/src/index.js
 ```
 
-## 🔍 API reference (minimal)
+Use the built artifact from `dist/` or publish the package under the npm name you choose.
 
-- `new MiniSearch(docs?: Document[])`
-  - Creates a search engine and indexes the provided documents (optional).
-- `addDocuments(docs: Document[]): void`
-  - Adds documents and updates IDF weights.
-- `search(query: string): Document[]`
-  - Returns ranked results. Supports phrases with quotes.
+## Contributing
+
+Contributions welcome — open issues/PRs, propose features, or submit bug fixes.  
+Please follow the repository's code style`.
